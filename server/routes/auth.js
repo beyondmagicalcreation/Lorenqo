@@ -1,7 +1,7 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
 const { getInviteToken, getProject, insertParticipant, getParticipant, updateInviteTokenWithParticipant, updateParticipantStatus, getAdminByName } = require('../db');
-const { signToken } = require('../auth');
+const { signToken, requireAuth } = require('../auth');
 
 const router = express.Router();
 
@@ -164,6 +164,23 @@ router.post('/contact', async (req, res) => {
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
+});
+
+// POST /api/auth/refresh — renew contact JWT using existing valid token (no invite link needed)
+router.post('/refresh', requireAuth, (req, res) => {
+  if (req.auth.role !== 'contact') {
+    return res.status(403).json({ error: 'Only contacts can refresh tokens' });
+  }
+  const newToken = signToken({
+    role: req.auth.role,
+    id: req.auth.id,
+    projectId: req.auth.projectId,
+    projectName: req.auth.projectName,
+    name: req.auth.name,
+    language: req.auth.language,
+    avatarColor: req.auth.avatarColor,
+  });
+  res.json({ token: newToken });
 });
 
 module.exports = router;

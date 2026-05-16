@@ -222,6 +222,8 @@ io.on('connection', (socket) => {
 
     socket.on('join', async () => {
       try {
+        // Re-create participant from JWT if DB was wiped (e.g. Railway redeploy with ephemeral storage)
+        await insertParticipant(participantId, projectId, name, language, avatarColor);
         await setOnline(1, participantId);
         await markMessagesRead(projectId, participantId);
 

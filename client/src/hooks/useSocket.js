@@ -6,17 +6,33 @@ const SOCKET_URL = typeof window !== 'undefined' && window.location.port === '51
   : window.location.origin;
 
 export function useSocket({ token, role, onMessage, onTranslated, onHistory, onThreadHistory,
-                            onFileList, onParticipants, onTyping, onUserOnline, onMessagesRead }) {
+                            onFileList, onParticipants, onTyping, onUserOnline, onMessagesRead,
+                            onReconnecting }) {
   const socketRef = useRef(null);
 
   useEffect(() => {
     if (!token) return;
 
     const socket = io(SOCKET_URL, {
-      transports: ['websocket'],
+      transports: ['websocket', 'polling'],
       auth: { token },
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
     });
     socketRef.current = socket;
+
+    socket.on('connect', () => {
+      onReconnecting?.(false);
+      if (role === 'contact') socket.emit('join');
+    });
+
+    socket.on('disconnect', (reason) => {
+      // Only show reconnecting for server-side or transport drops, not manual disconnects
+      if (reason !== 'io client disconnect') {
+        onReconnecting?.(true);
+      }
+    });
 
     socket.on('message-history', (msgs) => onHistory?.(msgs));
     socket.on('thread-history', (data) => onThreadHistory?.(data));
@@ -28,10 +44,6 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
     socket.on('user-online', (data) => onUserOnline?.(data));
     socket.on('user-offline', (data) => onUserOnline?.({ ...data, online: false }));
     socket.on('messages-read', (data) => onMessagesRead?.(data));
-
-    if (role === 'contact') {
-      socket.on('connect', () => socket.emit('join'));
-    }
 
     return () => { socket.disconnect(); };
   }, [token, role]);

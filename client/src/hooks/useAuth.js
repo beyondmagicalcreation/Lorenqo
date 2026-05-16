@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 const STORAGE_KEY = 'lorenqo-auth-token';
 
@@ -29,6 +29,23 @@ export function useAuth() {
     localStorage.removeItem(STORAGE_KEY);
     setToken(null);
   }, []);
+
+  // Auto-refresh contact token if it expires within 7 days — prevents needing the invite link again
+  useEffect(() => {
+    const storedToken = localStorage.getItem(STORAGE_KEY);
+    if (!storedToken) return;
+    const payload = parseToken(storedToken, { allowExpired: false });
+    if (!payload || payload.role !== 'contact') return;
+    const sevenDays = 7 * 24 * 60 * 60 * 1000;
+    if (payload.exp * 1000 - Date.now() > sevenDays) return;
+    fetch('/api/auth/refresh', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${storedToken}` },
+    })
+      .then((r) => (r.ok ? r.json() : null))
+      .then((data) => { if (data?.token) login(data.token); })
+      .catch(() => {});
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return { token, user, expiredUser, login, logout, isAdmin: user?.role === 'admin', isContact: user?.role === 'contact' };
 }
