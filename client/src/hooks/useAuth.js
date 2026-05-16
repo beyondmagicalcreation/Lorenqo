@@ -5,7 +5,9 @@ const STORAGE_KEY = 'lorenqo-auth-token';
 function parseToken(token, { allowExpired = false } = {}) {
   if (!token) return null;
   try {
-    const payload = JSON.parse(atob(token.split('.')[1]));
+    // JWT uses base64url (- and _ instead of + and /); atob requires standard base64
+    const b64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const payload = JSON.parse(atob(b64));
     if (!allowExpired && payload.exp && payload.exp * 1000 < Date.now()) return null;
     return payload;
   } catch {
@@ -21,6 +23,7 @@ export function useAuth() {
   const expiredUser = user ? null : parseToken(token, { allowExpired: true });
 
   const login = useCallback((newToken) => {
+    if (!newToken) return;
     localStorage.setItem(STORAGE_KEY, newToken);
     setToken(newToken);
   }, []);
