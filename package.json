@@ -1,0 +1,14 @@
+{
+  "name": "limitless-chat",
+  "version": "1.0.0",
+  "description": "Limitless Chat – Trilingual business chat app: NL / Darija / FR",
+  "scripts": {
+    "dev": "concurrently \"npm run dev --prefix server\" \"npm run dev --prefix client\"",
+    "build": "npm run build --prefix client",
+    "start": "node server/index.js",
+    "install:all": "npm i && npm i --prefix server && npm i --prefix client"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}
