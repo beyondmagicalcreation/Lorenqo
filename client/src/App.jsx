@@ -465,7 +465,7 @@ function ChatLayout({ user, token, logout }) {
       )}
 
       {/* Sidebar — hidden on mobile unless on sidebar tab */}
-      <div className={`${mobileTab === 'sidebar' ? 'flex' : 'hidden'} md:flex flex-col flex-shrink-0 w-full md:w-auto`}>
+      <div className={`${mobileTab === 'sidebar' ? 'flex' : 'hidden'} md:flex flex-col flex-shrink-0 w-full md:w-auto pb-16 md:pb-0`}>
         <Sidebar
           isAdmin={isAdmin}
           projects={projects}

@@ -345,7 +345,7 @@ function AdminSidebar({
               <span className="text-white font-bold text-lg">L</span>
             </div>
             <div>
-              <h1 className="text-sm font-bold text-foreground leading-tight">{APP_NAME}</h1>
+              <h1 className="text-sm font-bold text-foreground leading-tight">{COMPANY_NAME}</h1>
               <p className="text-[10px] text-muted">Admin · NL · MA · FR · EN</p>
             </div>
           </div>
@@ -537,40 +537,44 @@ function AdminSidebar({
         {/* Admin footer: language picker + logout */}
         <div className="px-4 py-3 border-t border-white/5">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
-              <span className="text-white text-xs font-bold">{currentUser?.name?.[0]?.toUpperCase() || 'A'}</span>
-            </div>
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-medium text-foreground truncate">{currentUser?.name || 'Admin'}</p>
-              <div className="relative">
-                <button
-                  onClick={() => setShowLangPicker((v) => !v)}
-                  className="flex items-center gap-1 text-xs text-muted hover:text-accent transition-colors"
-                >
-                  <span>{LANG_FLAGS[adminLanguage]}</span>
-                  <span>{LANG_LABELS[adminLanguage]}</span>
-                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
-                  </svg>
-                </button>
-                {showLangPicker && (
-                  <div className="absolute bottom-6 left-0 bg-surface2 border border-white/10 rounded-xl shadow-xl overflow-hidden z-10 w-44">
-                    {LANG_OPTIONS.map((l) => (
-                      <button
-                        key={l.value}
-                        onClick={() => { onAdminLanguageChange(l.value); setShowLangPicker(false); }}
-                        className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
-                          adminLanguage === l.value ? 'text-accent bg-accent/10' : 'text-foreground hover:bg-white/5'
-                        }`}
-                        style={{ minHeight: '44px' }}
-                      >
-                        <span>{l.flag}</span>
-                        <span>{l.label}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
+            <button
+              onClick={() => setShowSettings(true)}
+              className="flex items-center gap-2 flex-shrink-0 text-left"
+              style={{ minHeight: '44px' }}
+            >
+              <div className="w-8 h-8 rounded-full bg-accent flex items-center justify-center flex-shrink-0">
+                <span className="text-white text-xs font-bold">{currentUser?.name?.[0]?.toUpperCase() || 'A'}</span>
               </div>
+              <p className="text-sm font-medium text-foreground truncate">{currentUser?.name || 'Admin'}</p>
+            </button>
+            <div className="flex-1 min-w-0 relative">
+              <button
+                onClick={() => setShowLangPicker((v) => !v)}
+                className="flex items-center gap-1 text-xs text-muted hover:text-accent transition-colors"
+              >
+                <span>{LANG_FLAGS[adminLanguage]}</span>
+                <span>{LANG_LABELS[adminLanguage]}</span>
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              {showLangPicker && (
+                <div className="absolute bottom-6 left-0 bg-surface2 border border-white/10 rounded-xl shadow-xl overflow-hidden z-10 w-44">
+                  {LANG_OPTIONS.map((l) => (
+                    <button
+                      key={l.value}
+                      onClick={() => { onAdminLanguageChange(l.value); setShowLangPicker(false); }}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-sm transition-colors ${
+                        adminLanguage === l.value ? 'text-accent bg-accent/10' : 'text-foreground hover:bg-white/5'
+                      }`}
+                      style={{ minHeight: '44px' }}
+                    >
+                      <span>{l.flag}</span>
+                      <span>{l.label}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
             <button
               onClick={() => setShowSettings(true)}

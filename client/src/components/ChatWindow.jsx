@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble.jsx';
 import AudioRecorder from './AudioRecorder.jsx';
 import FileUpload from './FileUpload.jsx';
+import Footer from './Footer.jsx';
 
 const COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME || 'Admin';
 
@@ -302,6 +303,9 @@ export default function ChatWindow({
             </svg>
           </button>
         </div>
+      </div>
+      <div className="md:hidden">
+        <Footer />
       </div>
     </div>
   );
