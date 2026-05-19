@@ -176,7 +176,7 @@ export default function ChatWindow({
     : `Type in ${LANG_NAMES[currentUser?.language] || 'your language'}…`;
 
   return (
-    <div className="flex-1 flex flex-col bg-bg min-w-0 h-full">
+    <div className="flex-1 flex flex-col bg-bg min-w-0">
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-white/5 bg-surface flex items-center justify-between flex-shrink-0 gap-3">
         <div className="min-w-0">
@@ -245,7 +245,7 @@ export default function ChatWindow({
       )}
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto scrollbar-thin px-5 py-4 space-y-1">
+      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-5 py-4 space-y-1">
         {displayMessages.length === 0 && searchQuery ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-muted text-sm">No messages matching "{searchQuery}"</p>

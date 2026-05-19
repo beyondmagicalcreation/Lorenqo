@@ -3,7 +3,11 @@ const path = require('path');
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
 
-const dbDir = process.env.DB_PATH ? path.dirname(process.env.DB_PATH) : './data';
+const dbDir = process.env.DB_PATH
+  ? path.dirname(process.env.DB_PATH)
+  : process.env.RAILWAY_VOLUME_MOUNT_PATH
+    ? path.join(process.env.RAILWAY_VOLUME_MOUNT_PATH, 'data')
+    : './data';
 if (!fs.existsSync(dbDir)) fs.mkdirSync(dbDir, { recursive: true });
 
 const ds = {

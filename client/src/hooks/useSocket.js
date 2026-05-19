@@ -16,7 +16,8 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
     const socket = io(SOCKET_URL, {
       transports: ['websocket', 'polling'],
       auth: { token },
-      reconnectionAttempts: Infinity,
+      reconnection: true,
+      reconnectionAttempts: 10,
       reconnectionDelay: 1000,
       reconnectionDelayMax: 5000,
     });
