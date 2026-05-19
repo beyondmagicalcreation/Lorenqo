@@ -101,7 +101,8 @@ function emitToThread(projectId, contactId, event, data) {
     emitToAdmins(event, data);
     return;
   }
-  // Use named room for reliable delivery — survives reconnects and mobile background/foreground
+  // Emit to contact's named room — reliable across reconnects and mobile background/foreground
+  console.log(`Emitting to room: contact:${contactId} — event: ${event}`);
   io.to(`contact:${contactId}`).emit(event, data);
   // Always copy to all admins
   emitToAdmins(event, data);
@@ -158,12 +159,12 @@ io.on('connection', (socket) => {
       if (projectId === '__admin__') {
         // Admin channel — no translation, just broadcast to all admins
         const enriched = { ...msgData, sender_name: adminName, sender_language: adminLang, avatar_color: color };
-        emitToAdmins('message-received', enriched);
+        emitToAdmins('new-message', enriched);
         return;
       }
 
       const enriched = { ...msgData, sender_name: adminName, sender_language: adminLang, avatar_color: color, translating: true };
-      emitToThread(projectId, targetContactId, 'message-received', enriched);
+      emitToThread(projectId, targetContactId, 'new-message', enriched);
 
       try {
         const translations = await translateAll(content, adminLang);
@@ -187,7 +188,7 @@ io.on('connection', (socket) => {
       await insertFile(id, projectId, adminId, fileName, fileSize, filePath);
 
       const fullMsg = { ...msgData, sender_name: adminName, avatar_color: color };
-      emitToThread(projectId, targetContactId, 'message-received', fullMsg);
+      emitToThread(projectId, targetContactId, 'new-message', fullMsg);
       emitToThread(projectId, targetContactId, 'file-shared', { projectId, ...fullMsg });
 
       const files = await getFiles(projectId);
@@ -247,7 +248,7 @@ io.on('connection', (socket) => {
       await insertMessage(msgData);
 
       const enriched = { ...msgData, sender_name: name, sender_language: language, avatar_color: avatarColor || '#E87B1E', translating: true };
-      emitToThread(projectId, participantId, 'message-received', enriched);
+      emitToThread(projectId, participantId, 'new-message', enriched);
 
       try {
         const translations = await translateAll(content, language);
@@ -271,7 +272,7 @@ io.on('connection', (socket) => {
 
       const sender = await getParticipant(participantId);
       const fullMsg = { ...msgData, sender_name: sender?.name || name, avatar_color: sender?.avatar_color || avatarColor };
-      emitToThread(projectId, participantId, 'message-received', fullMsg);
+      emitToThread(projectId, participantId, 'new-message', fullMsg);
       emitToThread(projectId, participantId, 'file-shared', { projectId, ...fullMsg });
 
       const files = await getFiles(projectId);

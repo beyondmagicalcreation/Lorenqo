@@ -245,7 +245,16 @@ export default function ChatWindow({
       )}
 
       {/* Messages */}
-      <div className="flex-1 min-h-0 overflow-y-auto scrollbar-thin px-5 py-4 space-y-1" style={{ WebkitOverflowScrolling: 'touch', overscrollBehavior: 'contain' }}>
+      <div
+        className="flex-1 min-h-0 scrollbar-thin px-5 py-4 space-y-1"
+        style={{
+          overflowY: 'scroll',
+          WebkitOverflowScrolling: 'touch',
+          height: '100%',
+          position: 'relative',
+          overscrollBehavior: 'contain',
+        }}
+      >
         {displayMessages.length === 0 && searchQuery ? (
           <div className="flex items-center justify-center h-full">
             <p className="text-muted text-sm">No messages matching "{searchQuery}"</p>

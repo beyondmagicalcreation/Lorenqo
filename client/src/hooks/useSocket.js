@@ -37,7 +37,7 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
 
     socket.on('message-history', (msgs) => onHistory?.(msgs));
     socket.on('thread-history', (data) => onThreadHistory?.(data));
-    socket.on('message-received', (msg) => onMessage?.(msg));
+    socket.on('new-message', (msg) => onMessage?.(msg));
     socket.on('message-translated', (data) => onTranslated?.(data));
     socket.on('file-list', (files) => onFileList?.(files));
     socket.on('participants-update', (data) => onParticipants?.(data));
