@@ -250,7 +250,6 @@ export default function ChatWindow({
         style={{
           overflowY: 'scroll',
           WebkitOverflowScrolling: 'touch',
-          height: '100%',
           position: 'relative',
           overscrollBehavior: 'contain',
         }}

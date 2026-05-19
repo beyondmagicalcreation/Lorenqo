@@ -17,9 +17,9 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
       transports: ['websocket', 'polling'],
       auth: { token },
       reconnection: true,
-      reconnectionAttempts: 10,
+      reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
+      reconnectionDelayMax: 10000,
     });
     socketRef.current = socket;
 

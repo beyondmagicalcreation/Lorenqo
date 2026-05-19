@@ -295,11 +295,29 @@ io.on('connection', (socket) => {
   }
 });
 
+// ── Graceful shutdown (compact NeDB files before Railway kills the process) ───
+async function gracefulShutdown(signal) {
+  console.log(`${signal} received — compacting DB before exit`);
+  for (const [name, store] of Object.entries(require('./db').ds)) {
+    try { store.persistence.compactDatafile(); } catch (_) {}
+  }
+  // Give NeDB ~2s to finish writing compacted files before SIGKILL arrives
+  await new Promise((r) => setTimeout(r, 2000));
+  process.exit(0);
+}
+process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
+process.on('SIGINT', () => gracefulShutdown('SIGINT'));
+
 // ── Start ─────────────────────────────────────────────────────────────────────
 async function start() {
   await seed();
   await seedAdmins();
   await resetAllOnline();
+  const { ds } = require('./db');
+  const [pCount, cCount, mCount] = await Promise.all([
+    ds.projects.count({}), ds.participants.count({}), ds.messages.count({}),
+  ]);
+  console.log(`DB loaded: ${pCount} projects, ${cCount} contacts, ${mCount} messages`);
   const PORT = process.env.PORT || 3001;
   server.listen(PORT, () => console.log(`${process.env.APP_NAME || 'Lorenqo'} server running on port ${PORT}`));
 }
