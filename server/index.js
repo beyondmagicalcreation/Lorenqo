@@ -101,12 +101,8 @@ function emitToThread(projectId, contactId, event, data) {
     emitToAdmins(event, data);
     return;
   }
-  // Regular thread: send to the specific contact's socket(s)
-  for (const [sid, info] of socketMap) {
-    if (info.role === 'contact' && info.participantId === contactId && info.projectId === projectId) {
-      io.to(sid).emit(event, data);
-    }
-  }
+  // Use named room for reliable delivery — survives reconnects and mobile background/foreground
+  io.to(`contact:${contactId}`).emit(event, data);
   // Always copy to all admins
   emitToAdmins(event, data);
 }
@@ -199,11 +195,7 @@ io.on('connection', (socket) => {
     });
 
     socket.on('typing', ({ projectId, targetContactId, isTyping }) => {
-      for (const [sid, info] of socketMap) {
-        if (info.role === 'contact' && info.participantId === targetContactId) {
-          io.to(sid).emit('typing', { senderId: adminId, name: adminName, isTyping });
-        }
-      }
+      io.to(`contact:${targetContactId}`).emit('typing', { senderId: adminId, name: adminName, isTyping });
     });
 
     socket.on('disconnect', () => {
@@ -218,6 +210,7 @@ io.on('connection', (socket) => {
   if (auth.role === 'contact') {
     const { id: participantId, projectId, name, language, avatarColor } = auth;
     socketMap.set(socket.id, { participantId, projectId, role: 'contact' });
+    socket.join(`contact:${participantId}`);
     console.log(`Contact connected: ${name} (${socket.id})`);
 
     socket.on('join', async () => {
