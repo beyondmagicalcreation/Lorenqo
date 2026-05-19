@@ -246,11 +246,12 @@ export default function ChatWindow({
 
       {/* Messages */}
       <div
-        className="flex-1 min-h-0 scrollbar-thin px-5 py-4 space-y-1"
+        className="scrollbar-thin px-5 py-4 space-y-1"
         style={{
-          overflowY: 'scroll',
+          flex: 1,
+          minHeight: 0,
+          overflowY: 'auto',
           WebkitOverflowScrolling: 'touch',
-          position: 'relative',
           overscrollBehavior: 'contain',
         }}
       >
@@ -288,7 +289,7 @@ export default function ChatWindow({
       </div>
 
       {/* Input bar */}
-      <div className="px-4 py-3 border-t border-white/5 bg-surface flex-shrink-0">
+      <div className="px-4 py-3 border-t border-white/5 bg-surface flex-shrink-0" style={{ position: 'sticky', bottom: 0 }}>
         <div className="flex items-center gap-2 bg-surface2 rounded-2xl px-3 py-2">
           {!isAdminChannel && <FileUpload onFileSelected={(f) => uploadFile(f, 'file')} disabled={uploading} />}
           <input

@@ -453,7 +453,7 @@ function ChatLayout({ user, token, logout }) {
   const threadIsRead = currentThreadKey ? readThreads.has(currentThreadKey) : false;
 
   return (
-    <div className="flex h-dvh overflow-hidden bg-bg">
+    <div className="flex h-dvh bg-bg">
       {/* Reconnecting banner */}
       {isReconnecting && (
         <div className="fixed top-0 inset-x-0 bg-amber-600/95 text-white text-xs text-center py-2 z-50 flex items-center justify-center gap-2">
