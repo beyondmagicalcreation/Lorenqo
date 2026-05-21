@@ -291,10 +291,11 @@ function ChatLayout({ user, token, logout }) {
   }, [isAdmin, user.projectId, projects]);
 
   const showPushNotification = useCallback((msg) => {
+    if (typeof Notification === 'undefined') return;
     if (Notification.permission !== 'granted') {
       if (!notifRequestedRef.current) {
         notifRequestedRef.current = true;
-        Notification.requestPermission();
+        Notification.requestPermission().catch(() => {});
       }
       return;
     }
@@ -306,15 +307,13 @@ function ChatLayout({ user, token, logout }) {
 
   const onMessage = useCallback((msg) => {
     setMessages((prev) => {
-      const exists = prev.find((m) => m.id === msg.id);
-      if (exists) return prev;
-      // Show push notification for messages not from self
-      const isOwnMsg = isAdmin
-        ? (msg.sender_id === 'admin' || msg.sender_id?.startsWith('admin-'))
-        : msg.sender_id === user.id;
-      if (!isOwnMsg) showPushNotification(msg);
+      if (prev.find((m) => m.id === msg.id)) return prev;
       return [...prev, msg];
     });
+    const isOwnMsg = isAdmin
+      ? (msg.sender_id === 'admin' || msg.sender_id?.startsWith('admin-'))
+      : msg.sender_id === user.id;
+    if (!isOwnMsg) showPushNotification(msg);
   }, [isAdmin, user.id, showPushNotification]);
 
   const onTranslated = useCallback(({ id, content_nl, content_ma_arab, content_ma_franco, content_fr, content_en }) => {
