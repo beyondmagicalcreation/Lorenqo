@@ -253,6 +253,7 @@ export default function ChatWindow({
           overflowY: 'auto',
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
+          position: 'relative',
         }}
       >
         {displayMessages.length === 0 && searchQuery ? (
@@ -275,7 +276,7 @@ export default function ChatWindow({
 
         {/* Typing indicator */}
         {typingLabel && (
-          <div className="flex items-center gap-2 px-2 py-1">
+          <div className="flex items-center gap-2 px-2 py-1" style={{ minHeight: '24px' }}>
             <div className="flex items-center gap-0.5 bg-msg-other rounded-2xl px-3 py-2">
               <span className="typing-dot text-muted" />
               <span className="typing-dot text-muted" />

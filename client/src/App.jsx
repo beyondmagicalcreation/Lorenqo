@@ -325,7 +325,7 @@ function ChatLayout({ user, token, logout }) {
     );
   }, []);
 
-  const onHistory = useCallback((msgs) => setMessages(msgs), []);
+  const onHistory = useCallback((msgs) => { if (msgs && msgs.length > 0) setMessages(msgs); }, []);
   const onThreadHistory = useCallback(({ messages: msgs }) => setMessages(msgs), []);
   const onParticipants = useCallback((data) => {
     if (data && data.projectId && Array.isArray(data.participants)) {
