@@ -11,7 +11,7 @@ const LANG_OPTIONS = [
   { value: 'fr', label: 'Français', flag: '🇫🇷' },
 ];
 
-export default function JoinProject({ onLogin, isAdminViewing = false }) {
+export default function JoinProject({ onLogin }) {
   const { token } = useParams();
   const navigate = useNavigate();
 
@@ -21,7 +21,6 @@ export default function JoinProject({ onLogin, isAdminViewing = false }) {
   const [language, setLanguage] = useState('en');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const [isRelogin, setIsRelogin] = useState(false);
 
   useEffect(() => {
     async function validate() {
@@ -33,11 +32,6 @@ export default function JoinProject({ onLogin, isAdminViewing = false }) {
         setProjectName(data.projectName || '');
         if (data.contactName) setName(data.contactName);
         if (data.contactLanguage) setLanguage(data.contactLanguage);
-        if (data.isRelogin) {
-          setIsRelogin(true);
-          // Auto-login — no need to fill in the form again
-          await doLogin(data.contactLanguage || 'en');
-        }
       } catch {
         setTokenValid(false);
         setError('Connection error. Please try again.');
@@ -45,30 +39,6 @@ export default function JoinProject({ onLogin, isAdminViewing = false }) {
     }
     if (token) validate();
   }, [token]);
-
-  const doLogin = async (lang) => {
-    setLoading(true);
-    setError('');
-    try {
-      const res = await fetch('/api/auth/contact', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ token, name: '', language: lang }),
-      });
-      const data = await res.json();
-      if (!res.ok) { setError(data.error || 'Sign in failed'); setLoading(false); return; }
-      if (isAdminViewing) {
-        alert(`✓ This is a re-login link for an existing contact.\n\nYour admin session is still active.`);
-        setLoading(false);
-        return;
-      }
-      onLogin(data.token);
-      navigate('/');
-    } catch {
-      setError('Connection error. Please try again.');
-      setLoading(false);
-    }
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -83,10 +53,6 @@ export default function JoinProject({ onLogin, isAdminViewing = false }) {
       });
       const data = await res.json();
       if (!res.ok) { setError(data.error || 'Sign in failed'); return; }
-      if (isAdminViewing) {
-        alert(`✓ Link works! Contact "${name}" would log in as ${language.toUpperCase()}.\n\nYour admin session is still active. Log out first to test as a real contact.`);
-        return;
-      }
       onLogin(data.token);
       navigate('/');
     } catch {
@@ -96,14 +62,14 @@ export default function JoinProject({ onLogin, isAdminViewing = false }) {
     }
   };
 
-  if (tokenValid === null || (tokenValid && isRelogin && loading)) {
+  if (tokenValid === null) {
     return (
       <div className="fixed inset-0 bg-bg flex items-center justify-center">
         <div className="text-center space-y-2">
           <div className="w-10 h-10 rounded-xl bg-accent/20 flex items-center justify-center mx-auto">
             <span className="text-accent font-bold text-xl">L</span>
           </div>
-          <p className="text-muted text-sm">{isRelogin ? 'Signing you back in…' : 'Checking invitation…'}</p>
+          <p className="text-muted text-sm">Checking invitation…</p>
         </div>
       </div>
     );
