@@ -176,7 +176,7 @@ export default function ChatWindow({
     : `Type in ${LANG_NAMES[currentUser?.language] || 'your language'}…`;
 
   return (
-    <div className="flex-1 flex flex-col bg-bg min-w-0">
+    <div className="flex-1 flex flex-col bg-bg min-w-0 min-h-0">
       {/* Header */}
       <div className="px-5 py-3.5 border-b border-white/5 bg-surface flex items-center justify-between flex-shrink-0 gap-3">
         <div className="min-w-0">

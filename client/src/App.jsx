@@ -502,7 +502,7 @@ function ChatLayout({ user, token, logout }) {
       </div>
 
       {/* Chat — hidden on mobile unless on chat tab */}
-      <div className={`${mobileTab === 'chat' ? 'flex' : 'hidden'} md:flex flex-1 flex-col min-w-0 pb-16 md:pb-0`}>
+      <div className={`${mobileTab === 'chat' ? 'flex' : 'hidden'} md:flex flex-1 flex-col min-w-0 min-h-0 pb-16 md:pb-0`}>
         <ChatWindow
           isAdmin={isAdmin}
           project={activeProject}
