@@ -254,6 +254,7 @@ export default function ChatWindow({
           WebkitOverflowScrolling: 'touch',
           overscrollBehavior: 'contain',
           position: 'relative',
+          touchAction: 'pan-y',
         }}
       >
         {displayMessages.length === 0 && searchQuery ? (
