@@ -19,7 +19,7 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
       reconnection: true,
       reconnectionAttempts: Infinity,
       reconnectionDelay: 1000,
-      reconnectionDelayMax: 10000,
+      reconnectionDelayMax: 5000,
     });
     socketRef.current = socket;
 
@@ -35,6 +35,13 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
       }
     });
 
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible' && !socket.connected) {
+        socket.connect();
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     socket.on('message-history', (msgs) => onHistory?.(msgs));
     socket.on('thread-history', (data) => onThreadHistory?.(data));
     socket.on('new-message', (msg) => onMessage?.(msg));
@@ -46,7 +53,10 @@ export function useSocket({ token, role, onMessage, onTranslated, onHistory, onT
     socket.on('user-offline', (data) => onUserOnline?.({ ...data, online: false }));
     socket.on('messages-read', (data) => onMessagesRead?.(data));
 
-    return () => { socket.disconnect(); };
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      socket.disconnect();
+    };
   }, [token, role]);
 
   const sendContactMessage = useCallback((content) => {
