@@ -7,6 +7,7 @@ import JoinProject from './pages/JoinProject.jsx';
 import Sidebar from './components/Sidebar.jsx';
 import ChatWindow from './components/ChatWindow.jsx';
 import RightPanel from './components/RightPanel.jsx';
+import InstallBanner from './components/InstallBanner.jsx';
 
 const APP_NAME = import.meta.env.VITE_APP_NAME || 'Lorenqo';
 
@@ -545,6 +546,7 @@ function ChatLayout({ user, token, logout }) {
 
       {/* Mobile bottom tab bar */}
       <BottomTabBar activeTab={mobileTab} onTabChange={setMobileTab} />
+      <InstallBanner />
     </div>
   );
 }
