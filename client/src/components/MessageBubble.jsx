@@ -195,14 +195,11 @@ export default function MessageBubble({ msg, isOwn, userLanguage, searchQuery, i
             )}
 
             {!isTranslating && myTranslation && (
-              <div className={`flex items-start gap-1.5 mt-0.5 ${isOwn ? 'flex-row-reverse' : ''}`}>
-                <span className="text-base leading-tight">{FLAG[userLanguage]}</span>
-                <p className={`text-[12px] leading-relaxed ${
-                  isOwn ? 'text-white/70 text-right' : 'text-foreground/70'
-                } ${userLanguage === 'ma' ? 'font-arabic' : ''}`}>
-                  {highlight(myTranslation, searchQuery)}
-                </p>
-              </div>
+              <p className={`text-[13px] leading-relaxed mt-1 ${
+                isOwn ? 'text-white/60 text-right' : 'text-foreground/60'
+              } ${userLanguage === 'ma' ? 'font-arabic' : ''}`}>
+                {highlight(myTranslation, searchQuery)}
+              </p>
             )}
 
             {!isTranslating && hasTranslations && (
