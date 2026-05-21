@@ -266,6 +266,7 @@ function ChatLayout({ user, token, logout }) {
   const [isReconnecting, setIsReconnecting] = useState(false);
 
   const fetchProjects = useCallback(async () => {
+    if (!isAdmin) return; // contacts get their project from the JWT — never expose all projects
     try {
       const res = await fetch('/api/projects', {
         headers: { Authorization: `Bearer ${token}` },
@@ -273,8 +274,7 @@ function ChatLayout({ user, token, logout }) {
       if (!res.ok) return;
       const data = await res.json();
       setProjects(data);
-      // Show onboarding if admin has no projects yet
-      if (isAdmin && data.length === 0 && !localStorage.getItem('lorenqo-onboarding-done')) {
+      if (data.length === 0 && !localStorage.getItem('lorenqo-onboarding-done')) {
         setShowOnboarding(true);
       }
     } catch (err) {

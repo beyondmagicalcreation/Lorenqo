@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 const { getMessages, getFiles } = require('../db');
+const { requireAuth } = require('../auth');
 
 const router = express.Router();
 
@@ -37,7 +38,7 @@ router.get('/files/:projectId', (req, res) => {
   res.json(files);
 });
 
-router.post('/upload', upload.single('file'), (req, res) => {
+router.post('/upload', requireAuth, upload.single('file'), (req, res) => {
   if (!req.file) return res.status(400).json({ error: 'No file or invalid type' });
   res.json({
     fileName: req.file.originalname,

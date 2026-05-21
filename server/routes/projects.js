@@ -6,7 +6,7 @@ const { emitToAdmins } = require('../socketState');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+router.get('/', requireAdmin, async (req, res) => {
   try {
     const projects = await getProjects();
     const enriched = await Promise.all(projects.map(async (p) => {
@@ -20,7 +20,7 @@ router.get('/', async (req, res) => {
   }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/:id', requireAdmin, async (req, res) => {
   try {
     const project = await getProject(req.params.id);
     if (!project) return res.status(404).json({ error: 'Not found' });
