@@ -221,11 +221,11 @@ export default function MessageBubble({ msg, isOwn, userLanguage, searchQuery, i
                 isOwn ? 'bg-black/20 text-right' : 'bg-black/20'
               }`}>
                 {allTranslations.map((t) => (
-                  <div key={t.key} className={`flex gap-2 ${isOwn ? 'flex-row-reverse' : ''}`}>
-                    <span className="text-muted flex-shrink-0 w-32">
+                  <div key={t.key} className={`flex items-start gap-2 justify-between sm:justify-start ${isOwn ? 'sm:flex-row-reverse' : ''}`}>
+                    <span className="text-muted flex-shrink-0 sm:w-32">
                       {t.flag} {t.label}
                     </span>
-                    <span className={`text-foreground/80 ${t.arabic ? 'font-arabic text-right' : ''}`}>
+                    <span className={`flex-1 min-w-0 truncate text-right sm:flex-none sm:overflow-visible sm:whitespace-normal sm:text-left text-foreground/80 ${t.arabic ? 'font-arabic sm:text-right' : ''}`}>
                       {highlight(t.text, searchQuery)}
                     </span>
                   </div>
