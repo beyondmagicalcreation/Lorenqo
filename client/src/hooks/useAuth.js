@@ -16,7 +16,14 @@ function parseToken(token, { allowExpired = false } = {}) {
 }
 
 export function useAuth() {
-  const [token, setToken] = useState(() => localStorage.getItem(STORAGE_KEY));
+  const [token, setToken] = useState(() => {
+    // Invite links must always show the join form — clear any existing session first
+    if (window.location.pathname.startsWith('/join/')) {
+      localStorage.removeItem(STORAGE_KEY);
+      return null;
+    }
+    return localStorage.getItem(STORAGE_KEY);
+  });
   const user = parseToken(token);
 
   // Parse the stored token even if expired — tells us the role/name for better error UX
