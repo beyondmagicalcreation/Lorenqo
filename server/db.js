@@ -71,6 +71,10 @@ async function updateParticipantStatus(id, status) {
   return ds.participants.update({ _id: id }, { $set: { status } }, {});
 }
 
+async function updateParticipantName(id, name) {
+  return ds.participants.update({ _id: id }, { $set: { name } }, {});
+}
+
 async function setOnline(online, id) {
   return ds.participants.update({ _id: id }, { $set: { online } }, {});
 }
@@ -257,7 +261,7 @@ async function seedAdmins() {
 module.exports = {
   ds,
   getProjects, getProject, insertProject, updateProject,
-  getParticipants, getParticipant, insertParticipant, updateParticipantStatus, setOnline, resetAllOnline,
+  getParticipants, getParticipant, insertParticipant, updateParticipantStatus, updateParticipantName, setOnline, resetAllOnline,
   deleteParticipantData,
   getMessages, insertMessage, updateTranslations, markMessagesRead,
   getFiles, insertFile,

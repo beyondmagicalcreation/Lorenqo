@@ -425,6 +425,24 @@ function ChatLayout({ user, token, logout }) {
     }
   }, [token, activeProject]);
 
+  const handleRenameContact = useCallback(async (projectId, contactId, name) => {
+    try {
+      const res = await fetch(`/api/projects/${projectId}/contacts/${contactId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ name }),
+      });
+      if (!res.ok) return;
+      setContactsMap((prev) => ({
+        ...prev,
+        [projectId]: (prev[projectId] || []).map((c) => c._id === contactId ? { ...c, name } : c),
+      }));
+      if (activeContact?._id === contactId) setActiveContact((c) => ({ ...c, name }));
+    } catch (err) {
+      console.error('Rename contact failed:', err);
+    }
+  }, [token, activeContact]);
+
   const handleDeleteContact = useCallback(async (projectId, contactId, contactName) => {
     if (!window.confirm(`Delete "${contactName}"?\n\nAll messages will be permanently removed.`)) return;
     try {
@@ -492,6 +510,7 @@ function ChatLayout({ user, token, logout }) {
           onCreateProject={handleCreateProject}
           onGenerateInvite={handleGenerateInvite}
           onDeleteContact={handleDeleteContact}
+          onRenameContact={handleRenameContact}
           onRenameProject={handleRenameProject}
           isAdminChannel={isAdminChannel}
           onSelectAdminChannel={handleSelectAdminChannel}

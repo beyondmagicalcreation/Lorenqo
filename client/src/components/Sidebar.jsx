@@ -292,7 +292,7 @@ function AdminSidebar({
   projects, activeProject, activeContact, contactsMap,
   adminLanguage, onAdminLanguageChange,
   onSelectProject, onSelectContact, onCreateProject, onGenerateInvite, onDeleteContact,
-  onRenameProject,
+  onRenameProject, onRenameContact,
   isAdminChannel, onSelectAdminChannel, onLogout, currentUser, token,
 }) {
   const [newProjectName, setNewProjectName] = useState('');
@@ -302,6 +302,8 @@ function AdminSidebar({
   const [showLangPicker, setShowLangPicker] = useState(false);
   const [editingProjectId, setEditingProjectId] = useState(null);
   const [editingName, setEditingName] = useState('');
+  const [editingContactId, setEditingContactId] = useState(null);
+  const [editingContactName, setEditingContactName] = useState('');
   const [showSettings, setShowSettings] = useState(false);
 
   const handleCreate = (e) => {
@@ -474,6 +476,24 @@ function AdminSidebar({
                               activeContact?._id === contact._id ? 'bg-accent/15' : 'hover:bg-white/5'
                             }`}
                           >
+                            {editingContactId === contact._id ? (
+                              <input
+                                autoFocus
+                                value={editingContactName}
+                                onChange={(e) => setEditingContactName(e.target.value)}
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    const name = editingContactName.trim();
+                                    if (name) onRenameContact(project.id, contact._id, name);
+                                    setEditingContactId(null);
+                                  }
+                                  if (e.key === 'Escape') setEditingContactId(null);
+                                }}
+                                onBlur={() => setEditingContactId(null)}
+                                className="flex-1 mx-2 my-1 px-2 py-1 text-xs bg-surface2 border border-accent/50 rounded text-foreground outline-none"
+                                style={{ minHeight: '32px' }}
+                              />
+                            ) : (
                             <button
                               onClick={() => onSelectContact(contact)}
                               className={`flex-1 text-left flex items-center gap-2 px-2 py-2 min-w-0`}
@@ -483,9 +503,16 @@ function AdminSidebar({
                                 className="w-2 h-2 rounded-full flex-shrink-0"
                                 style={{ backgroundColor: contact.avatar_color || '#E87B1E' }}
                               />
-                              <span className={`text-xs font-medium truncate flex-1 ${
-                                activeContact?._id === contact._id ? 'text-foreground' : 'text-muted hover:text-foreground'
-                              }`}>{contact.name}</span>
+                              <span
+                                className={`text-xs font-medium truncate flex-1 ${
+                                  activeContact?._id === contact._id ? 'text-foreground' : 'text-muted hover:text-foreground'
+                                }`}
+                                onDoubleClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingContactId(contact._id);
+                                  setEditingContactName(contact.name);
+                                }}
+                              >{contact.name}</span>
                               <span className="text-sm">{LANG_FLAGS[contact.language] || ''}</span>
                               {contact.status === 'invited' ? (
                                 <span className="text-[9px] font-medium text-muted/60 bg-white/5 px-1.5 py-0.5 rounded-full flex-shrink-0">Invited</span>
@@ -493,6 +520,7 @@ function AdminSidebar({
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
                               ) : null}
                             </button>
+                            )}
                             {/* 🔗 Reshare invite link */}
                             <button
                               onClick={(e) => { e.stopPropagation(); setReshareTarget({ contact, projectId: project.id }); }}

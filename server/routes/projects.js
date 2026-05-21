@@ -1,6 +1,6 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { getProjects, getProject, insertProject, updateProject, getParticipants, getParticipant, getLastMessage, insertInviteToken, updateInviteTokenWithParticipant, getInviteTokenForParticipant, deleteParticipantData, insertParticipant } = require('../db');
+const { getProjects, getProject, insertProject, updateProject, getParticipants, getParticipant, getLastMessage, insertInviteToken, updateInviteTokenWithParticipant, getInviteTokenForParticipant, deleteParticipantData, insertParticipant, updateParticipantName } = require('../db');
 const { requireAdmin } = require('../auth');
 const { emitToAdmins } = require('../socketState');
 
@@ -111,6 +111,18 @@ router.get('/:projectId/contacts/:contactId/invite', requireAdmin, async (req, r
       url: `/join/${newToken}`,
       fullUrl: `${appUrl}/join/${newToken}`,
     });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Rename a contact (admin only)
+router.put('/:projectId/contacts/:contactId', requireAdmin, async (req, res) => {
+  try {
+    const { name } = req.body;
+    if (!name?.trim()) return res.status(400).json({ error: 'Name required' });
+    await updateParticipantName(req.params.contactId, name.trim());
+    res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
