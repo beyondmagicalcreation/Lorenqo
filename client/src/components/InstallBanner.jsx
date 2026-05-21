@@ -14,20 +14,22 @@ export default function InstallBanner() {
     // Only mobile
     if (window.innerWidth >= 768) return;
 
-    const handler = (e) => {
-      e.preventDefault();
-      setPrompt(e);
+    // Use the prompt captured in index.html before React mounted
+    const deferred = window.deferredInstallPrompt;
+    if (deferred) {
+      setPrompt(deferred);
       setVisible(true);
-    };
-    window.addEventListener('beforeinstallprompt', handler);
-    return () => window.removeEventListener('beforeinstallprompt', handler);
+    }
   }, []);
 
   const handleInstall = async () => {
     if (!prompt) return;
     prompt.prompt();
     const { outcome } = await prompt.userChoice;
-    if (outcome === 'accepted') setVisible(false);
+    if (outcome === 'accepted') {
+      window.deferredInstallPrompt = null;
+      setVisible(false);
+    }
   };
 
   const handleDismiss = () => {

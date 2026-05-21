@@ -477,23 +477,27 @@ function AdminSidebar({
                             }`}
                           >
                             {editingContactId === contact._id ? (
-                              <input
-                                autoFocus
-                                value={editingContactName}
-                                onChange={(e) => setEditingContactName(e.target.value)}
-                                onKeyDown={(e) => {
-                                  if (e.key === 'Enter') {
-                                    const name = editingContactName.trim();
-                                    if (name) onRenameContact(project.id, contact._id, name);
-                                    setEditingContactId(null);
-                                  }
-                                  if (e.key === 'Escape') setEditingContactId(null);
-                                }}
-                                onBlur={() => setEditingContactId(null)}
-                                className="flex-1 mx-2 my-1 px-2 py-1 text-xs bg-surface2 border border-accent/50 rounded text-foreground outline-none"
-                                style={{ minHeight: '32px' }}
-                              />
+                              <>
+                                <span className="text-sm flex-shrink-0 pl-2">{LANG_FLAGS[contact.language] || ''}</span>
+                                <input
+                                  autoFocus
+                                  value={editingContactName}
+                                  onChange={(e) => setEditingContactName(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter') {
+                                      const name = editingContactName.trim();
+                                      if (name) onRenameContact(project.id, contact._id, name);
+                                      setEditingContactId(null);
+                                    }
+                                    if (e.key === 'Escape') setEditingContactId(null);
+                                  }}
+                                  onBlur={() => setEditingContactId(null)}
+                                  className="flex-1 mx-1 my-1 px-2 py-1 text-xs bg-surface2 border border-accent/50 rounded text-foreground outline-none"
+                                  style={{ minHeight: '32px' }}
+                                />
+                              </>
                             ) : (
+                            <>
                             <button
                               onClick={() => onSelectContact(contact)}
                               className={`flex-1 text-left flex items-center gap-2 px-2 py-2 min-w-0`}
@@ -507,19 +511,25 @@ function AdminSidebar({
                                 className={`text-xs font-medium truncate flex-1 ${
                                   activeContact?._id === contact._id ? 'text-foreground' : 'text-muted hover:text-foreground'
                                 }`}
-                                onDoubleClick={(e) => {
-                                  e.stopPropagation();
-                                  setEditingContactId(contact._id);
-                                  setEditingContactName(contact.name);
-                                }}
                               >{contact.name}</span>
-                              <span className="text-sm">{LANG_FLAGS[contact.language] || ''}</span>
+                              <span className="text-sm flex-shrink-0">{LANG_FLAGS[contact.language] || ''}</span>
                               {contact.status === 'invited' ? (
                                 <span className="text-[9px] font-medium text-muted/60 bg-white/5 px-1.5 py-0.5 rounded-full flex-shrink-0">Invited</span>
                               ) : contact.online === 1 ? (
                                 <span className="w-1.5 h-1.5 rounded-full bg-green-400 flex-shrink-0" />
                               ) : null}
                             </button>
+                            {/* Pencil rename — faintly visible on mobile, full on hover */}
+                            <button
+                              onClick={(e) => { e.stopPropagation(); setEditingContactId(contact._id); setEditingContactName(contact.name); }}
+                              className="opacity-30 group-hover:opacity-100 p-2 rounded text-muted hover:text-accent hover:bg-accent/10 transition-all flex-shrink-0"
+                              title="Rename contact"
+                            >
+                              <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                              </svg>
+                            </button>
+                            </>
                             )}
                             {/* 🔗 Reshare invite link */}
                             <button
