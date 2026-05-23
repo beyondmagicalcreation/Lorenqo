@@ -445,6 +445,26 @@ function ChatLayout({ user, token, logout }) {
     }
   }, [token, activeContact]);
 
+  const handleDeleteProject = useCallback(async (projectId, projectName) => {
+    if (!window.confirm(`Delete "${projectName}"?\n\nThis will permanently remove the project and all its contacts and messages.`)) return;
+    try {
+      const res = await fetch(`/api/projects/${projectId}`, {
+        method: 'DELETE',
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) { alert('Failed to delete project.'); return; }
+      setProjects(prev => prev.filter(p => p.id !== projectId));
+      if (activeProject?.id === projectId) {
+        setActiveProject(null);
+        setActiveContact(null);
+        setMessages([]);
+      }
+    } catch (err) {
+      console.error('Delete project failed:', err);
+      alert('Connection error. Please try again.');
+    }
+  }, [token, activeProject]);
+
   const handleDeleteContact = useCallback(async (projectId, contactId, contactName) => {
     if (!window.confirm(`Delete "${contactName}"?\n\nAll messages will be permanently removed.`)) return;
     try {
@@ -514,6 +534,7 @@ function ChatLayout({ user, token, logout }) {
           onDeleteContact={handleDeleteContact}
           onRenameContact={handleRenameContact}
           onRenameProject={handleRenameProject}
+          onDeleteProject={handleDeleteProject}
           isAdminChannel={isAdminChannel}
           onSelectAdminChannel={handleSelectAdminChannel}
           onLogout={logout}

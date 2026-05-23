@@ -1,6 +1,6 @@
 const express = require('express');
 const { v4: uuidv4 } = require('uuid');
-const { getProjects, getProject, insertProject, updateProject, getParticipants, getParticipant, getLastMessage, insertInviteToken, updateInviteTokenWithParticipant, getInviteTokenForParticipant, deleteParticipantData, insertParticipant, updateParticipantName } = require('../db');
+const { getProjects, getProject, insertProject, updateProject, getParticipants, getParticipant, getLastMessage, insertInviteToken, updateInviteTokenWithParticipant, getInviteTokenForParticipant, deleteParticipantData, deleteProjectData, insertParticipant, updateParticipantName } = require('../db');
 const { requireAdmin } = require('../auth');
 const { emitToAdmins } = require('../socketState');
 
@@ -122,6 +122,16 @@ router.put('/:projectId/contacts/:contactId', requireAdmin, async (req, res) => 
     const { name } = req.body;
     if (!name?.trim()) return res.status(400).json({ error: 'Name required' });
     await updateParticipantName(req.params.contactId, name.trim());
+    res.json({ ok: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Delete a project and all its contacts/messages (admin only)
+router.delete('/:id', requireAdmin, async (req, res) => {
+  try {
+    await deleteProjectData(req.params.id);
     res.json({ ok: true });
   } catch (err) {
     res.status(500).json({ error: err.message });

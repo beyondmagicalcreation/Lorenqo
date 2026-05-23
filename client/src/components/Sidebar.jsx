@@ -292,7 +292,7 @@ function AdminSidebar({
   projects, activeProject, activeContact, contactsMap,
   adminLanguage, onAdminLanguageChange,
   onSelectProject, onSelectContact, onCreateProject, onGenerateInvite, onDeleteContact,
-  onRenameProject, onRenameContact,
+  onRenameProject, onRenameContact, onDeleteProject,
   isAdminChannel, onSelectAdminChannel, onLogout, currentUser, token,
 }) {
   const [newProjectName, setNewProjectName] = useState('');
@@ -428,16 +428,22 @@ function AdminSidebar({
                     />
                   </div>
                 ) : (
-                  <button
-                    onClick={() => onSelectProject(project)}
-                    onDoubleClick={(e) => startEditProject(e, project)}
-                    className={`w-full text-left px-3 py-2.5 rounded-xl transition-colors flex items-center gap-2 group ${
+                  <div
+                    className={`w-full px-2 py-1 rounded-xl transition-colors flex items-center gap-1 group ${
                       isActive ? 'bg-accent/20 border border-accent/30' : 'hover:bg-white/5'
                     }`}
                     style={{ minHeight: '44px' }}
                   >
-                    <span className="text-base flex-shrink-0">💬</span>
-                    <span className="text-sm font-semibold text-foreground truncate flex-1">{project.name}</span>
+                    {/* Project name — click selects, double-click renames */}
+                    <button
+                      onClick={() => onSelectProject(project)}
+                      onDoubleClick={(e) => startEditProject(e, project)}
+                      className="flex items-center gap-2 flex-1 min-w-0 text-left py-1.5 px-1"
+                    >
+                      <span className="text-base flex-shrink-0">💬</span>
+                      <span className="text-sm font-semibold text-foreground truncate flex-1">{project.name}</span>
+                    </button>
+                    {/* Invite */}
                     <button
                       onClick={(e) => handleOpenInvite(e, project)}
                       title="Invite contact"
@@ -448,7 +454,27 @@ function AdminSidebar({
                       </svg>
                       Invite
                     </button>
-                  </button>
+                    {/* Pencil — rename */}
+                    <button
+                      onClick={(e) => startEditProject(e, project)}
+                      title="Rename project"
+                      className="opacity-30 group-hover:opacity-100 p-1.5 rounded text-muted hover:text-accent hover:bg-accent/10 transition-all flex-shrink-0"
+                    >
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
+                      </svg>
+                    </button>
+                    {/* Trash — delete */}
+                    <button
+                      onClick={(e) => { e.stopPropagation(); onDeleteProject(project.id, project.name); }}
+                      title="Delete project"
+                      className="opacity-30 group-hover:opacity-100 p-1.5 rounded text-red-400/50 hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0"
+                    >
+                      <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
+                  </div>
                 )}
 
                 {isActive && (

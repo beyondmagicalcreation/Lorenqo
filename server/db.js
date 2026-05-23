@@ -88,6 +88,14 @@ async function deleteParticipantData(contactId) {
   await ds.participants.remove({ _id: contactId }, {});
 }
 
+async function deleteProjectData(projectId) {
+  await ds.messages.remove({ project_id: projectId }, { multi: true });
+  await ds.files.remove({ project_id: projectId }, { multi: true });
+  await ds.inviteTokens.remove({ project_id: projectId }, { multi: true });
+  await ds.participants.remove({ project_id: projectId }, { multi: true });
+  await ds.projects.remove({ _id: projectId }, {});
+}
+
 // ── Messages ─────────────────────────────────────────────────────────────────
 
 async function getMessages(projectId, contactId = null) {
@@ -262,7 +270,7 @@ module.exports = {
   ds,
   getProjects, getProject, insertProject, updateProject,
   getParticipants, getParticipant, insertParticipant, updateParticipantStatus, updateParticipantName, setOnline, resetAllOnline,
-  deleteParticipantData,
+  deleteParticipantData, deleteProjectData,
   getMessages, insertMessage, updateTranslations, markMessagesRead,
   getFiles, insertFile,
   getLastMessage,
