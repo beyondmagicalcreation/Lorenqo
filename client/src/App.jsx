@@ -8,6 +8,7 @@ import Sidebar from './components/Sidebar.jsx';
 import ChatWindow from './components/ChatWindow.jsx';
 import RightPanel from './components/RightPanel.jsx';
 import InstallBanner from './components/InstallBanner.jsx';
+import LandingPage from './pages/LandingPage.jsx';
 
 const APP_NAME = import.meta.env.VITE_APP_NAME || 'Lorenqo';
 
@@ -566,7 +567,7 @@ export default function App() {
       <Route path="/" element={
         user
           ? <ChatLayout user={user} token={token} logout={logout} />
-          : <NoInvite expiredUser={expiredUser} />
+          : <LandingPage expiredUser={expiredUser} />
       } />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
