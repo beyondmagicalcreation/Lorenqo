@@ -18,7 +18,7 @@ function Avatar({ name, color, size = 8 }) {
   return (
     <div
       className={`w-${size} h-${size} rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0`}
-      style={{ backgroundColor: color || '#E87B1E' }}
+      style={{ backgroundColor: color || '#a855f7' }}
     >
       {name?.[0]?.toUpperCase() || '?'}
     </div>
@@ -505,7 +505,7 @@ function AdminSidebar({
                             >
                               <span
                                 className="w-2 h-2 rounded-full flex-shrink-0"
-                                style={{ backgroundColor: contact.avatar_color || '#E87B1E' }}
+                                style={{ backgroundColor: contact.avatar_color || '#a855f7' }}
                               />
                               <span
                                 className={`text-xs font-medium truncate flex-1 ${

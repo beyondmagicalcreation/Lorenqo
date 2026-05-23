@@ -128,6 +128,7 @@ export default function LandingPage({ expiredUser }) {
         background: '#07040f',
         color: 'white',
         minHeight: '100vh',
+        overflowY: 'auto',
       }}
     >
       {/* Expired session banners */}

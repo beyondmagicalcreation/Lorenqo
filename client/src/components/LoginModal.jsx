@@ -3,11 +3,11 @@ import { v4 as uuidv4 } from '../uuid-shim.js';
 
 const LANG_OPTIONS = [
   { value: 'nl', label: 'Nederlands', flag: '🇳🇱', color: '#3B82F6' },
-  { value: 'ma', label: 'Darija (Marokkaans)', flag: '🇲🇦', color: '#E87B1E' },
+  { value: 'ma', label: 'Darija (Marokkaans)', flag: '🇲🇦', color: '#a855f7' },
   { value: 'fr', label: 'Français', flag: '🇫🇷', color: '#1D4ED8' },
 ];
 
-const COLORS = ['#E87B1E', '#3B82F6', '#3FB950', '#A855F7', '#EC4899', '#14B8A6'];
+const COLORS = ['#a855f7', '#3B82F6', '#3FB950', '#f59e0b', '#EC4899', '#14B8A6'];
 
 // uuid v4 shim using crypto if available
 function genId() {

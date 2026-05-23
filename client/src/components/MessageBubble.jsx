@@ -7,7 +7,7 @@ function Avatar({ name, color }) {
   return (
     <div
       className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold text-white flex-shrink-0"
-      style={{ backgroundColor: color || '#E87B1E' }}
+      style={{ backgroundColor: color || '#a855f7' }}
     >
       {name?.[0]?.toUpperCase() || '?'}
     </div>
