@@ -546,7 +546,7 @@ function ChatLayout({ user, token, logout }) {
 
       {/* Mobile bottom tab bar */}
       <BottomTabBar activeTab={mobileTab} onTabChange={setMobileTab} />
-      <InstallBanner />
+      <InstallBanner isAdmin={isAdmin} />
     </div>
   );
 }
