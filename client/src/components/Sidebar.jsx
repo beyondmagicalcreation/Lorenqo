@@ -534,7 +534,7 @@ function AdminSidebar({
                             {/* 🔗 Reshare invite link */}
                             <button
                               onClick={(e) => { e.stopPropagation(); setReshareTarget({ contact, projectId: project.id }); }}
-                              className="opacity-0 group-hover:opacity-100 p-2 rounded text-muted/50 hover:text-accent hover:bg-accent/10 transition-all flex-shrink-0"
+                              className="opacity-30 group-hover:opacity-100 p-2 rounded text-muted/50 hover:text-accent hover:bg-accent/10 transition-all flex-shrink-0"
                               title="Get invite link"
                             >
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -544,7 +544,7 @@ function AdminSidebar({
                             {/* 🗑 Delete */}
                             <button
                               onClick={(e) => { e.stopPropagation(); onDeleteContact(project.id, contact._id, contact.name); }}
-                              className="opacity-0 group-hover:opacity-100 p-2 mr-1 rounded text-red-400/50 hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0"
+                              className="opacity-30 group-hover:opacity-100 p-2 mr-1 rounded text-red-400/50 hover:text-red-400 hover:bg-red-400/10 transition-all flex-shrink-0"
                               title="Delete contact"
                             >
                               <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
