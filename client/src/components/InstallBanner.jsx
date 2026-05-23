@@ -6,11 +6,6 @@ function isIOS() {
   return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
-function isAndroidChrome() {
-  const ua = navigator.userAgent;
-  return /Android/.test(ua) && /Chrome\//.test(ua) && !/Edg|OPR|SamsungBrowser/.test(ua);
-}
-
 function isInStandalone() {
   return (
     window.matchMedia('(display-mode: standalone)').matches ||
@@ -18,9 +13,7 @@ function isInStandalone() {
   );
 }
 
-// Computed once per page load — UA never changes mid-session
 const IOS_DEVICE = isIOS();
-const ANDROID_DEVICE = isAndroidChrome();
 
 export default function InstallBanner({ isAdmin }) {
   const [prompt, setPrompt] = useState(() => window.deferredInstallPrompt || null);
@@ -32,28 +25,21 @@ export default function InstallBanner({ isAdmin }) {
     if (localStorage.getItem(STORAGE_KEY)) return;
     if (window.innerWidth >= 768) return;
 
-    // iOS Safari — no install API, show manual instructions
-    if (IOS_DEVICE) {
-      const t = setTimeout(() => setVisible(true), 1500);
-      return () => clearTimeout(t);
+    // Capture native install prompt if already available, or when it fires later
+    if (window.deferredInstallPrompt) {
+      setPrompt(window.deferredInstallPrompt);
     }
+    const handler = (e) => {
+      e.preventDefault();
+      window.deferredInstallPrompt = e;
+      setPrompt(e);
+    };
+    window.addEventListener('beforeinstallprompt', handler);
 
-    // Android Chrome — show only when the native prompt is available
-    if (ANDROID_DEVICE) {
-      if (window.deferredInstallPrompt) {
-        setPrompt(window.deferredInstallPrompt);
-        setVisible(true);
-        return;
-      }
-      const handler = (e) => {
-        e.preventDefault();
-        window.deferredInstallPrompt = e;
-        setPrompt(e);
-        setVisible(true);
-      };
-      window.addEventListener('beforeinstallprompt', handler);
-      return () => window.removeEventListener('beforeinstallprompt', handler);
-    }
+    // Show immediately — don't wait for the native prompt
+    setVisible(true);
+
+    return () => window.removeEventListener('beforeinstallprompt', handler);
   }, [isAdmin]);
 
   const handleInstall = async () => {
@@ -102,15 +88,15 @@ export default function InstallBanner({ isAdmin }) {
             {' '}in your browser, then{' '}
             <strong className="text-foreground">"Add to Home Screen"</strong>
           </div>
-        ) : (
-          /* Android: native install button */
+        ) : prompt ? (
+          /* Android: native install button — only shown when browser confirms app is installable */
           <button
             onClick={handleInstall}
             className="w-full bg-accent text-white font-semibold py-3.5 rounded-xl hover:bg-accent/90 transition-colors mb-3"
           >
             Install
           </button>
-        )}
+        ) : null}
 
         <button
           onClick={handleDismiss}
