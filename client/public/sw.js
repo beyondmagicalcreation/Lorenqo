@@ -1,5 +1,5 @@
-const CACHE = 'lorenqo-v1';
-const PRECACHE = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png'];
+const CACHE = 'lorenqo-v3';
+const PRECACHE = ['/', '/manifest.json', '/icon-192.png?v=2', '/icon-512.png?v=2'];
 
 self.addEventListener('install', (e) => {
   e.waitUntil(
