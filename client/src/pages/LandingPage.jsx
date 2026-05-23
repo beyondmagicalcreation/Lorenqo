@@ -216,10 +216,10 @@ export default function LandingPage({ expiredUser }) {
             </div>
 
             {/* Headline */}
-            <h1 className="text-5xl sm:text-6xl font-black leading-[1.06] tracking-tight mb-6">
+            <h1 className="text-5xl sm:text-6xl font-black leading-[1.12] tracking-tight mb-6">
               <span className="text-white block">Talk business.</span>
               <span
-                className="block bg-clip-text text-transparent"
+                className="block bg-clip-text text-transparent pb-2"
                 style={{
                   backgroundImage: 'linear-gradient(90deg, #a78bfa 0%, #e879f9 50%, #fb923c 100%)',
                 }}
@@ -539,7 +539,7 @@ export default function LandingPage({ expiredUser }) {
 
       {/* ── Footer ─────────────────────────────────────────────────────────────── */}
       <footer
-        className="relative z-10 max-w-6xl mx-auto px-6 py-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm"
+        className="relative z-10 max-w-6xl mx-auto px-6 py-8 flex flex-col items-center gap-1 text-sm text-center"
         style={{ ...DIVIDER, color: 'rgba(255,255,255,0.28)' }}
       >
         <p>

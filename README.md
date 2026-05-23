@@ -149,6 +149,19 @@ Zet `APP_URL` op je Render-URL, bijv. `https://limitless-chat.onrender.com`.
 - Bestandsupload (PDF, DOCX, XLSX, afbeeldingen, audio)
 - Spraakberichten
 
+## PWA-icoon bijwerken na kleurwijziging
+
+Als het PWA-icoon op het startscherm nog oranje is na een kleurwijziging, komt dit door de browsercache. Het nieuwe paarse icoon staat al in de code.
+
+**Oplossing voor gebruikers:**
+1. Verwijder de app van het startscherm
+2. Open de app opnieuw via de browser op lorenqo.com
+3. Installeer de app opnieuw via "Toevoegen aan beginscherm"
+
+Dit is een eenmalige stap — het nieuwe paarse icoon wordt dan correct geladen.
+
+---
+
 ## Tech Stack
 
 | Laag | Technologie |
