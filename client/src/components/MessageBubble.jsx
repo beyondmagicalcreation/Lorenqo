@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { format } from 'date-fns';
 
-const FLAG = { nl: '🇳🇱', fr: '🇫🇷', ma: '🇲🇦', en: '🇬🇧' };
+const FLAG = { nl: '🇳🇱', fr: '🇫🇷', ma: '🇲🇦', ma_franco: '🇲🇦', ma_arab: '🇲🇦', en: '🇬🇧' };
 
 function Avatar({ name, color }) {
   return (
@@ -128,10 +128,12 @@ export default function MessageBubble({ msg, isOwn, userLanguage, searchQuery, i
   const myTranslation = (() => {
     if (!userLanguage) return null;
     const map = {
-      nl: msg.content_nl,
-      fr: msg.content_fr,
-      ma: msg.content_ma_franco || msg.content_ma_arab,
-      en: msg.content_en,
+      nl:       msg.content_nl,
+      fr:       msg.content_fr,
+      en:       msg.content_en,
+      ma:       msg.content_ma_franco || msg.content_ma_arab,
+      ma_franco: msg.content_ma_franco,
+      ma_arab:  msg.content_ma_arab,
     };
     const t = map[userLanguage];
     return t && t !== originalText ? t : null;
@@ -197,7 +199,8 @@ export default function MessageBubble({ msg, isOwn, userLanguage, searchQuery, i
             {!isTranslating && myTranslation && (
               <p className={`text-[13px] leading-relaxed mt-1 ${
                 isOwn ? 'text-white/60 text-right' : 'text-foreground/60'
-              } ${userLanguage === 'ma' ? 'font-arabic' : ''}`}>
+              } ${userLanguage === 'ma_arab' ? 'font-arabic' : ''}`}
+              dir={userLanguage === 'ma_arab' ? 'rtl' : undefined}>
                 {highlight(myTranslation, searchQuery)}
               </p>
             )}

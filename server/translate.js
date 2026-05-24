@@ -33,7 +33,10 @@ async function translateAll(text, fromLang) {
 
   const client = new OpenAI({ apiKey });
 
-  const LANG_NAMES = { nl: 'Dutch', fr: 'French', ma: 'Moroccan Darija', en: 'English' };
+  const LANG_NAMES = {
+    nl: 'Dutch', fr: 'French', en: 'English',
+    ma: 'Moroccan Darija', ma_franco: 'Moroccan Darija', ma_arab: 'Moroccan Darija',
+  };
 
   try {
     const fromName = LANG_NAMES[fromLang] || fromLang;
@@ -48,11 +51,11 @@ async function translateAll(text, fromLang) {
 
     const json = JSON.parse(completion.choices[0].message.content);
     return {
-      content_nl: json.nl || (fromLang === 'nl' ? text : null),
-      content_ma_arab: json.ma_arab || null,
-      content_ma_franco: json.ma_franco || (fromLang === 'ma' ? text : null),
-      content_fr: json.fr || (fromLang === 'fr' ? text : null),
-      content_en: json.en || (fromLang === 'en' ? text : null),
+      content_nl:       json.nl       || (fromLang === 'nl'       ? text : null),
+      content_ma_arab:  json.ma_arab  || (fromLang === 'ma_arab'  ? text : null),
+      content_ma_franco: json.ma_franco || (['ma', 'ma_franco'].includes(fromLang) ? text : null),
+      content_fr:       json.fr       || (fromLang === 'fr'       ? text : null),
+      content_en:       json.en       || (fromLang === 'en'       ? text : null),
     };
   } catch (err) {
     console.error(`Translation failed (${fromLang} → all):`, err.message);

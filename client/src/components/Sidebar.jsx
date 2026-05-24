@@ -5,8 +5,8 @@ import Footer from './Footer.jsx';
 const APP_NAME = import.meta.env.VITE_APP_NAME || 'Lorenqo';
 const COMPANY_NAME = import.meta.env.VITE_COMPANY_NAME || 'Admin';
 
-const LANG_FLAGS = { nl: '🇳🇱', fr: '🇫🇷', ma: '🇲🇦', en: '🇬🇧' };
-const LANG_LABELS = { nl: 'NL', fr: 'FR', ma: 'MA', en: 'EN' };
+const LANG_FLAGS = { nl: '🇳🇱', fr: '🇫🇷', ma: '🇲🇦', ma_franco: '🇲🇦', ma_arab: '🇲🇦', en: '🇬🇧' };
+const LANG_LABELS = { nl: 'NL', fr: 'FR', ma: 'MA', ma_franco: 'MA', ma_arab: 'MA', en: 'EN' };
 const LANG_OPTIONS = [
   { value: 'nl', label: 'Dutch', flag: '🇳🇱' },
   { value: 'en', label: 'English', flag: '🇬🇧' },

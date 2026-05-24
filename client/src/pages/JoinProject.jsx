@@ -5,10 +5,11 @@ import Footer from '../components/Footer.jsx';
 const APP_NAME = import.meta.env.VITE_APP_NAME || 'Lorenqo';
 
 const LANG_OPTIONS = [
-  { value: 'nl', label: 'Dutch', flag: '🇳🇱' },
-  { value: 'en', label: 'English', flag: '🇬🇧' },
-  { value: 'ma', label: 'Darija', flag: '🇲🇦' },
-  { value: 'fr', label: 'Français', flag: '🇫🇷' },
+  { value: 'nl',       label: 'Dutch',           flag: '🇳🇱' },
+  { value: 'en',       label: 'English',          flag: '🇬🇧' },
+  { value: 'ma_franco', label: 'Darija (Latin)',  flag: '🇲🇦', example: 'labas?' },
+  { value: 'ma_arab',  label: 'Darija (Arabic)',  flag: '🇲🇦', example: 'لاباس؟' },
+  { value: 'fr',       label: 'Français',         flag: '🇫🇷' },
 ];
 
 export default function JoinProject({ onLogin }) {
@@ -135,7 +136,14 @@ export default function JoinProject({ onLogin }) {
                   style={{ minHeight: '44px' }}
                 >
                   <span className="text-2xl">{l.flag}</span>
-                  <span className="text-sm font-medium">{l.label}</span>
+                  <span className="flex flex-col items-start">
+                    <span className="text-sm font-medium leading-tight">{l.label}</span>
+                    {l.example && (
+                      <span className={`text-xs opacity-50 leading-tight ${l.value === 'ma_arab' ? 'font-arabic' : ''}`}>
+                        {l.example}
+                      </span>
+                    )}
+                  </span>
                 </button>
               ))}
             </div>
