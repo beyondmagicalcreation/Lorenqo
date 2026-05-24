@@ -642,13 +642,19 @@ export default function App() {
   return (
     <Routes>
       <Route path="/admin" element={
-        user ? <Navigate to="/" replace /> : <AdminLogin onLogin={login} />
+        user?.role === 'admin'
+          ? <ChatLayout user={user} token={token} logout={logout} />
+          : user
+          ? <Navigate to="/" replace />
+          : <AdminLogin onLogin={login} />
       } />
       <Route path="/join/:token" element={
         user ? <Navigate to="/" replace /> : <JoinProject onLogin={login} />
       } />
       <Route path="/" element={
-        user
+        user?.role === 'admin'
+          ? <Navigate to="/admin" replace />
+          : user
           ? <ChatLayout user={user} token={token} logout={logout} />
           : <LandingPage expiredUser={expiredUser} />
       } />
