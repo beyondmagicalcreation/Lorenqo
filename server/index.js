@@ -51,7 +51,7 @@ app.get('/health', (req, res) => res.json({ status: 'ok', app: process.env.APP_N
 app.get('/api/config', (req, res) => res.json({
   appName: process.env.APP_NAME || 'Lorenqo',
   appTagline: process.env.APP_TAGLINE || 'Language. Communication. Global.',
-  supportEmail: process.env.SUPPORT_EMAIL || 'hello@lorenqo.app',
+  supportEmail: process.env.SUPPORT_EMAIL || 'hello@lorenqo.com',
 }));
 
 // Serve built React app in production

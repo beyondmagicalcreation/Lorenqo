@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
-const MAILTO = 'mailto:hello@lorenqo.app?subject=Lorenqo Access Request';
-const MAILTO_ENTERPRISE = 'mailto:hello@lorenqo.app?subject=Lorenqo Enterprise Inquiry';
+const MAILTO = 'mailto:hello@lorenqo.com?subject=Lorenqo Access Request';
+const MAILTO_ENTERPRISE = 'mailto:hello@lorenqo.com?subject=Lorenqo Enterprise Inquiry';
 
 const FEATURES = [
   {
@@ -273,6 +273,12 @@ export default function LandingPage({ expiredUser }) {
                 </span>
               ))}
             </div>
+            <p className="text-sm text-white/40 mt-3">
+              Need another language?{' '}
+              <a href="mailto:hello@lorenqo.com" className="underline hover:text-white/60 transition-colors">
+                Contact us — hello@lorenqo.com
+              </a>
+            </p>
           </div>
 
           {/* Right: phone mockup */}
