@@ -222,7 +222,10 @@ export default function MessageBubble({ msg, isOwn, userLanguage, searchQuery, i
                     <span className="text-muted flex-shrink-0 sm:w-32">
                       {t.flag} {t.label}
                     </span>
-                    <span className={`flex-1 min-w-0 text-right sm:flex-none sm:text-left text-foreground/80 ${t.arabic ? 'font-arabic sm:text-right' : ''}`}>
+                    <span
+                      dir={t.arabic ? 'rtl' : undefined}
+                      className={`flex-1 min-w-0 text-right sm:flex-none sm:text-left text-foreground/80 ${t.arabic ? 'font-arabic text-right' : ''}`}
+                    >
                       {highlight(t.text, searchQuery)}
                     </span>
                   </div>
