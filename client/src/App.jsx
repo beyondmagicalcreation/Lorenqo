@@ -238,7 +238,10 @@ function BottomTabBar({ activeTab, onTabChange, hasUnread }) {
 // ── Main chat layout ──────────────────────────────────────────────────────────
 function ChatLayout({ user, token, logout }) {
   const isAdmin = user.role === 'admin';
-  const notifRequestedRef = useRef(false);
+  const activeProjectRef = useRef(null);
+  const activeContactRef = useRef(null);
+  const navigateRef = useRef(null);
+  const socketRef = useRef(null);
 
   const [adminLanguage, setAdminLanguage] = useState(() =>
     localStorage.getItem('admin-language') || 'nl'
@@ -265,6 +268,7 @@ function ChatLayout({ user, token, logout }) {
   const [readThreads, setReadThreads] = useState(new Set());
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [isReconnecting, setIsReconnecting] = useState(false);
+  const [unreadCount, setUnreadCount] = useState(0);
 
   const fetchProjects = useCallback(async () => {
     if (!isAdmin) return; // contacts get their project from the JWT — never expose all projects
@@ -292,20 +296,57 @@ function ChatLayout({ user, token, logout }) {
     }
   }, [isAdmin, user.projectId, projects]);
 
-  const showPushNotification = useCallback((msg) => {
-    if (typeof Notification === 'undefined') return;
-    if (Notification.permission !== 'granted') {
-      if (!notifRequestedRef.current) {
-        notifRequestedRef.current = true;
-        Notification.requestPermission().catch(() => {});
-      }
-      return;
-    }
-    if (document.hidden) {
-      const body = msg.content_original?.slice(0, 80) || msg.file_name || 'Shared a file';
-      new Notification(`${msg.sender_name} — ${APP_NAME}`, { body, icon: '/favicon.ico' });
+  // Sync activeProject/activeContact into refs for stable notification callbacks
+  useEffect(() => { activeProjectRef.current = activeProject; }, [activeProject]);
+  useEffect(() => { activeContactRef.current = activeContact; }, [activeContact]);
+
+  // Request notification permission proactively on first login
+  useEffect(() => {
+    if (typeof Notification !== 'undefined' && Notification.permission === 'default') {
+      Notification.requestPermission().catch(() => {});
     }
   }, []);
+
+  // Update browser tab title badge
+  useEffect(() => {
+    document.title = unreadCount > 0 ? `(${unreadCount}) ${APP_NAME}` : APP_NAME;
+  }, [unreadCount]);
+
+  // Clear badge when tab becomes visible or window gains focus
+  useEffect(() => {
+    const clear = () => { if (!document.hidden) setUnreadCount(0); };
+    document.addEventListener('visibilitychange', clear);
+    window.addEventListener('focus', clear);
+    return () => {
+      document.removeEventListener('visibilitychange', clear);
+      window.removeEventListener('focus', clear);
+    };
+  }, []);
+
+  const showPushNotification = useCallback((msg) => {
+    const isActiveThread = isAdmin
+      ? (activeProjectRef.current?.id === msg.project_id &&
+         activeContactRef.current?._id === msg.contact_id)
+      : true; // contacts only ever have one conversation
+
+    if (!isActiveThread || document.hidden) {
+      setUnreadCount((c) => c + 1);
+    }
+
+    if (typeof Notification === 'undefined' || Notification.permission !== 'granted') return;
+    if (!document.hidden && isActiveThread) return;
+
+    const body = msg.content_original?.slice(0, 80) || msg.file_name || 'Shared a file';
+    const n = new Notification(msg.sender_name, {
+      body,
+      icon: '/icon-192.png',
+      tag: `${msg.project_id}:${msg.contact_id}`,
+    });
+    n.onclick = () => {
+      window.focus();
+      navigateRef.current?.(msg.project_id, msg.contact_id);
+    };
+  }, [isAdmin]);
 
   const onMessage = useCallback((msg) => {
     setMessages((prev) => {
@@ -358,6 +399,27 @@ function ChatLayout({ user, token, logout }) {
     onParticipants, onFileList, onTyping, onUserOnline, onMessagesRead,
     onReconnecting: setIsReconnecting,
   });
+
+  useEffect(() => { socketRef.current = socket; }, [socket]);
+
+  // Keep navigateRef current so notification click can open the right conversation
+  useEffect(() => {
+    navigateRef.current = (projectId, contactId) => {
+      const project = projects.find((p) => p.id === projectId);
+      if (!project) return;
+      const contacts = contactsMap[projectId] || [];
+      const contact = contacts.find((c) => c._id === contactId);
+      setActiveProject(project);
+      setActiveContact(contact || null);
+      setMessages([]);
+      setSearchQuery('');
+      setMobileTab('chat');
+      if (isAdmin) {
+        socketRef.current?.joinProject(projectId);
+        if (contact) socketRef.current?.getThread(projectId, contactId);
+      }
+    };
+  }, [projects, contactsMap, isAdmin]);
 
   const handleSelectProject = useCallback((project) => {
     setActiveProject(project);
